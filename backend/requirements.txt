@@ -1,1 +1,10 @@
-python-multipart==0.0.32
+fastapi
+uvicorn[standard]
+python-multipart
+google-generativeai
+faiss-cpu
+numpy
+pydantic
+sqlalchemy
+semgrep
+reportlab
