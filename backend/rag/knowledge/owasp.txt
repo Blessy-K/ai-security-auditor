@@ -1,0 +1,19 @@
+SQL Injection
+
+CWE: CWE-89
+
+Severity: High
+
+Description:
+SQL Injection occurs when user input is concatenated into SQL queries.
+
+Prevention:
+Use parameterized queries.
+Never concatenate user input.
+Validate and sanitize inputs.
+
+Example:
+cursor.execute(
+    "SELECT * FROM users WHERE id = ?",
+    (user_id,)
+)

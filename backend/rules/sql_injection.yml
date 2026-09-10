@@ -1,0 +1,14 @@
+rules:
+  - id: python-sqli-fstring
+    languages: [python]
+    message: Possible SQL Injection using an f-string.
+    severity: ERROR
+    pattern: |
+      cursor.execute(f"...{$X}...")
+
+  - id: python-sqli-concat
+    languages: [python]
+    message: Possible SQL Injection using string concatenation.
+    severity: ERROR
+    pattern: |
+      cursor.execute("..." + $X)
