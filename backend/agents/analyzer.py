@@ -1,13 +1,17 @@
-from google import genai
+import google.generativeai as genai
 from dotenv import load_dotenv
 from pathlib import Path
 import os
 import json
 
-# Load .env
+# ---------- Load Environment ----------
+
 load_dotenv(Path(__file__).resolve().parent.parent / ".env")
 
-client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+GEMINI_API_KEY = os.getenv("GOOGLE_API_KEY")
+genai.configure(api_key=GEMINI_API_KEY)
+
+model = genai.GenerativeModel("gemini-1.5-flash")
 
 # ---------- Offline fallback ----------
 
@@ -25,7 +29,7 @@ def offline_analysis(finding):
     (user_id,)
 )""",
             "why_fix_works": "Parameterized queries separate SQL code from user input.",
-            "confidence": 0.95
+            "confidence": 0.95,
         }
 
     if rule == "xss":
@@ -37,7 +41,7 @@ def offline_analysis(finding):
             "fixed_code": """const name = location.hash;
 document.getElementById("app").textContent = name;""",
             "why_fix_works": "textContent treats input as plain text instead of HTML.",
-            "confidence": 0.94
+            "confidence": 0.94,
         }
 
     if rule == "hardcoded-credentials":
@@ -51,7 +55,7 @@ document.getElementById("app").textContent = name;""",
 api_key = os.getenv("API_KEY")
 password = os.getenv("DB_PASSWORD")""",
             "why_fix_works": "Environment variables keep secrets outside the source code.",
-            "confidence": 0.97
+            "confidence": 0.97,
         }
 
     if rule == "weak-crypto":
@@ -67,7 +71,7 @@ hashed = bcrypt.hashpw(
     bcrypt.gensalt()
 )""",
             "why_fix_works": "bcrypt is a secure adaptive password hashing algorithm.",
-            "confidence": 0.93
+            "confidence": 0.93,
         }
 
     return {
@@ -77,21 +81,19 @@ hashed = bcrypt.hashpw(
         "explanation": "Unknown vulnerability.",
         "fixed_code": "",
         "why_fix_works": "",
-        "confidence": 0.50
+        "confidence": 0.50,
     }
 
 
-# ---------- Gemini analysis ----------
+# ---------- Gemini Analysis ----------
 
 def analyze_all(code, findings):
-
     prompt = f"""
 You are an OWASP cybersecurity expert.
 
 Analyze ALL vulnerabilities and return ONLY a JSON array.
 
 Each object MUST contain:
-
 cwe
 owasp
 risk
@@ -108,14 +110,10 @@ Findings:
 """
 
     try:
-        response = client.models.generate_content(
-            model="gemini-3.6-flash",
-            contents=prompt
-        )
+        response = model.generate_content(prompt)
 
         text = (
-            response.text
-            .replace("```json", "")
+            response.text.replace("```json", "")
             .replace("```", "")
             .strip()
         )
@@ -123,5 +121,4 @@ Findings:
         return json.loads(text)
 
     except Exception:
-        # If Gemini quota is exceeded, use offline analysis
         return [offline_analysis(f) for f in findings]
