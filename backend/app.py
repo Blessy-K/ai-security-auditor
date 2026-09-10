@@ -19,7 +19,10 @@ from reports.pdf_report import generate_pdf
 
 load_dotenv()
 
-client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+genai.configure(api_key=GEMINI_API_KEY)
+
+model = genai.GenerativeModel("gemini-1.5-flash")
 
 # -------------------- APP -------------------- #
 
@@ -85,7 +88,6 @@ def scan_targets(targets):
     results = []
 
     for target in targets:
-
         findings = run_semgrep(target)
 
         if not findings:
@@ -97,11 +99,9 @@ def scan_targets(targets):
         except Exception:
             code = ""
 
-        # One Gemini request per file
         analyses = analyze_all(code, findings)
 
         for finding, analysis in zip(findings, analyses):
-
             validation = validate_patch(
                 finding,
                 analysis.get("fixed_code", "")
@@ -179,14 +179,8 @@ Question:
 """
 
     try:
-        response = client.models.generate_content(
-            model="gemini-3.6-flash",
-            contents=prompt
-        )
-
+        response = model.generate_content(prompt)
         return {"answer": response.text}
 
     except Exception as e:
-        return {
-            "answer": f"Gemini API Error: {str(e)}"
-        }
+        return {"answer": f"Gemini API Error: {str(e)}"}
