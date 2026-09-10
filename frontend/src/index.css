@@ -1,7 +1,35 @@
 @import "tailwindcss";
 
-body {
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
   margin: 0;
+  overflow-x: hidden;
+}
+
+body {
   background: #0f172a;
   font-family: Inter, Arial, sans-serif;
+  color: white;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+pre {
+  overflow-x: auto;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
 }

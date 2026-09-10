@@ -78,7 +78,7 @@ export default function SummaryCards({ report, dark }) {
   };
 
   return (
-    <section className="grid grid-cols-2 lg:grid-cols-4 gap-5">
+    <section className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-5">
       {cards.map((card) => {
         const Icon = card.icon;
         const style = colors[card.color];
@@ -86,7 +86,7 @@ export default function SummaryCards({ report, dark }) {
         return (
           <div
             key={card.title}
-            className={`rounded-3xl border bg-gradient-to-br p-5 backdrop-blur-xl transition-all duration-300 hover:scale-[1.03] ${
+            className={`rounded-2xl md:rounded-3xl border bg-gradient-to-br p-4 md:p-5 backdrop-blur-xl transition-all duration-300 hover:scale-[1.03] ${
               style.border
             } ${
               dark
@@ -95,7 +95,7 @@ export default function SummaryCards({ report, dark }) {
             }`}
           >
             <div className="flex items-center justify-between">
-              <Icon size={28} className={style.icon} />
+              <Icon size={22} className={`${style.icon} md:w-7 md:h-7`} />
 
               <div
                 className={`h-2 w-2 rounded-full animate-pulse ${style.icon.replace(
@@ -106,7 +106,7 @@ export default function SummaryCards({ report, dark }) {
             </div>
 
             <p
-              className={`mt-5 text-sm ${
+              className={`mt-3 md:mt-5 text-xs md:text-sm ${
                 dark ? "text-slate-400" : "text-slate-500"
               }`}
             >
@@ -114,7 +114,7 @@ export default function SummaryCards({ report, dark }) {
             </p>
 
             <h2
-              className={`text-4xl font-black mt-1 ${
+              className={`mt-1 text-2xl md:text-4xl font-black break-words ${
                 dark ? "text-white" : "text-slate-900"
               }`}
             >

@@ -18,39 +18,39 @@ export default function Hero({ dark }) {
 
   return (
     <section
-      className={`relative overflow-hidden rounded-[32px] border p-8 shadow-2xl transition-all duration-500 ${
+      className={`relative overflow-hidden rounded-[24px] md:rounded-[32px] border p-5 sm:p-7 lg:p-10 shadow-2xl transition-all duration-500 ${
         dark
           ? "border-white/10 bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950"
           : "border-slate-200 bg-gradient-to-br from-white via-slate-50 to-cyan-50"
       }`}
     >
       {/* Background Glow */}
-      <div className="absolute -top-20 -right-20 h-72 w-72 rounded-full bg-cyan-500/20 blur-3xl" />
-      <div className="absolute bottom-0 left-0 h-64 w-64 rounded-full bg-purple-500/20 blur-3xl" />
+      <div className="absolute -top-16 -right-16 h-48 w-48 md:h-72 md:w-72 rounded-full bg-cyan-500/20 blur-3xl" />
+      <div className="absolute bottom-0 left-0 h-40 w-40 md:h-64 md:w-64 rounded-full bg-purple-500/20 blur-3xl" />
 
       <div className="relative z-10">
         {/* Header */}
-        <div className="flex items-start gap-5">
+        <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5">
           <div
-            className={`rounded-3xl p-5 border backdrop-blur ${
+            className={`rounded-3xl p-4 md:p-5 border backdrop-blur shrink-0 ${
               dark
                 ? "bg-cyan-500/15 border-cyan-400/20"
                 : "bg-cyan-100 border-cyan-200"
             }`}
           >
-            <Shield size={46} className="text-cyan-500" />
+            <Shield size={42} className="text-cyan-500 md:w-[46px] md:h-[46px]" />
           </div>
 
-          <div className="flex-1">
-            <div className="flex items-center gap-2 text-cyan-500 mb-2">
+          <div className="flex-1 text-center sm:text-left">
+            <div className="flex items-center justify-center sm:justify-start gap-2 text-cyan-500 mb-2">
               <Sparkles size={18} />
-              <span className="text-sm font-bold tracking-[0.2em] uppercase">
+              <span className="text-xs sm:text-sm font-bold tracking-[0.18em] uppercase">
                 Autonomous AI Security
               </span>
             </div>
 
             <h1
-              className={`text-5xl md:text-6xl font-black leading-tight ${
+              className={`text-3xl sm:text-4xl lg:text-6xl font-black leading-tight ${
                 dark ? "text-white" : "text-slate-900"
               }`}
             >
@@ -58,7 +58,7 @@ export default function Hero({ dark }) {
             </h1>
 
             <p
-              className={`mt-3 text-lg ${
+              className={`mt-3 text-sm sm:text-base lg:text-lg ${
                 dark ? "text-slate-300" : "text-slate-600"
               }`}
             >
@@ -68,7 +68,7 @@ export default function Hero({ dark }) {
         </div>
 
         {/* Feature Cards */}
-        <div className="grid md:grid-cols-3 gap-4 mt-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
           {[
             {
               title: "Semgrep + Custom Rules",
@@ -76,7 +76,7 @@ export default function Hero({ dark }) {
               border: "border-cyan-500/20",
             },
             {
-              title: "Gemini 3.6 Flash",
+              title: "Gemini 1.5 Flash",
               label: "AI Model",
               border: "border-purple-500/20",
             },
@@ -103,7 +103,7 @@ export default function Hero({ dark }) {
               </p>
 
               <h3
-                className={`mt-2 text-2xl font-bold ${
+                className={`mt-2 text-lg md:text-xl font-bold ${
                   dark ? "text-white" : "text-slate-900"
                 }`}
               >
@@ -115,21 +115,51 @@ export default function Hero({ dark }) {
 
         {/* Pipeline */}
         <div
-          className={`mt-10 rounded-2xl border p-6 backdrop-blur ${
+          className={`mt-8 rounded-2xl border p-5 md:p-6 backdrop-blur ${
             dark
               ? "border-white/10 bg-black/20"
               : "border-slate-200 bg-white/70"
           }`}
         >
           <h3
-            className={`mb-6 text-lg font-semibold ${
+            className={`mb-5 text-lg font-semibold ${
               dark ? "text-white" : "text-slate-900"
             }`}
           >
             Scan Pipeline
           </h3>
 
-          <div className="flex items-center justify-between overflow-x-auto">
+          {/* Mobile */}
+          <div className="flex flex-col gap-4 md:hidden">
+            {steps.map((step, index) => {
+              const Icon = step.icon;
+
+              return (
+                <div key={step.label} className="flex items-center gap-4">
+                  <div
+                    className={`h-12 w-12 rounded-xl border flex items-center justify-center ${
+                      dark
+                        ? "border-slate-700 bg-slate-800"
+                        : "border-slate-200 bg-white"
+                    }`}
+                  >
+                    <Icon size={22} className={step.color} />
+                  </div>
+
+                  <span
+                    className={`font-medium ${
+                      dark ? "text-slate-200" : "text-slate-700"
+                    }`}
+                  >
+                    {index + 1}. {step.label}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Desktop */}
+          <div className="hidden md:flex items-center justify-between overflow-x-auto">
             {steps.map((step, index) => {
               const Icon = step.icon;
 
@@ -151,9 +181,7 @@ export default function Hero({ dark }) {
 
                     <span
                       className={`mt-3 text-sm ${
-                        dark
-                          ? "text-slate-300"
-                          : "text-slate-600"
+                        dark ? "text-slate-300" : "text-slate-600"
                       }`}
                     >
                       {step.label}

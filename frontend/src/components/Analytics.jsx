@@ -28,21 +28,21 @@ export default function Analytics({ report, dark }) {
   ].filter((d) => d.value > 0);
 
   return (
-    <section className="grid lg:grid-cols-3 gap-6">
+    <section className="grid grid-cols-1 xl:grid-cols-3 gap-5 md:gap-6">
       {/* Pie Chart */}
       <div
-        className={`lg:col-span-2 rounded-3xl border p-6 backdrop-blur-xl transition-all duration-500 ${
+        className={`xl:col-span-2 rounded-2xl md:rounded-3xl border p-4 md:p-6 backdrop-blur-xl transition-all duration-500 ${
           dark
             ? "border-white/10 bg-slate-900/70"
             : "border-slate-200 bg-white shadow-sm"
         }`}
       >
         <div className="flex items-center gap-3 mb-5">
-          <BarChart3 className="text-cyan-500" />
+          <BarChart3 className="text-cyan-500 shrink-0" />
 
           <div>
             <h2
-              className={`text-2xl font-bold ${
+              className={`text-lg md:text-2xl font-bold ${
                 dark ? "text-white" : "text-slate-900"
               }`}
             >
@@ -50,7 +50,7 @@ export default function Analytics({ report, dark }) {
             </h2>
 
             <p
-              className={`text-sm ${
+              className={`text-xs md:text-sm ${
                 dark ? "text-slate-400" : "text-slate-500"
               }`}
             >
@@ -59,49 +59,51 @@ export default function Analytics({ report, dark }) {
           </div>
         </div>
 
-        <div className="h-80">
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Tooltip
-                contentStyle={{
-                  background: dark ? "#0f172a" : "#ffffff",
-                  border: dark
-                    ? "1px solid #334155"
-                    : "1px solid #e2e8f0",
-                  borderRadius: "12px",
-                  color: dark ? "#fff" : "#0f172a",
-                }}
-              />
+        <div className="w-full overflow-x-auto">
+          <div className="h-64 sm:h-72 md:h-80 min-w-[260px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Tooltip
+                  contentStyle={{
+                    background: dark ? "#0f172a" : "#ffffff",
+                    border: dark
+                      ? "1px solid #334155"
+                      : "1px solid #e2e8f0",
+                    borderRadius: "12px",
+                    color: dark ? "#fff" : "#0f172a",
+                  }}
+                />
 
-              <Legend />
+                <Legend />
 
-              <Pie
-                data={data}
-                innerRadius={70}
-                outerRadius={110}
-                paddingAngle={4}
-                dataKey="value"
-                animationDuration={900}
-              >
-                {data.map((entry) => (
-                  <Cell key={entry.name} fill={entry.color} />
-                ))}
-              </Pie>
-            </PieChart>
-          </ResponsiveContainer>
+                <Pie
+                  data={data}
+                  dataKey="value"
+                  innerRadius={45}
+                  outerRadius={80}
+                  paddingAngle={4}
+                  animationDuration={900}
+                >
+                  {data.map((entry) => (
+                    <Cell key={entry.name} fill={entry.color} />
+                  ))}
+                </Pie>
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
         </div>
       </div>
 
       {/* Risk Overview */}
       <div
-        className={`rounded-3xl border p-6 backdrop-blur-xl transition-all duration-500 ${
+        className={`rounded-2xl md:rounded-3xl border p-4 md:p-6 backdrop-blur-xl transition-all duration-500 ${
           dark
             ? "border-white/10 bg-slate-900/70"
             : "border-slate-200 bg-white shadow-sm"
         }`}
       >
         <h2
-          className={`text-xl font-bold mb-5 ${
+          className={`text-lg md:text-xl font-bold mb-5 ${
             dark ? "text-white" : "text-slate-900"
           }`}
         >
@@ -118,9 +120,7 @@ export default function Analytics({ report, dark }) {
             <div key={label}>
               <div className="flex justify-between mb-2 text-sm">
                 <span
-                  className={
-                    dark ? "text-slate-300" : "text-slate-600"
-                  }
+                  className={dark ? "text-slate-300" : "text-slate-600"}
                 >
                   {label}
                 </span>
@@ -155,21 +155,23 @@ export default function Analytics({ report, dark }) {
         </div>
 
         <div
-          className={`mt-8 rounded-2xl p-4 ${
+          className={`mt-6 rounded-2xl p-4 ${
             dark ? "bg-slate-800/60" : "bg-slate-50"
           }`}
         >
-          <p
-            className={`text-sm ${
-              dark ? "text-slate-400" : "text-slate-500"
-            }`}
-          >
-            Files Scanned
-          </p>
+          <div>
+            <p
+              className={`text-sm ${
+                dark ? "text-slate-400" : "text-slate-500"
+              }`}
+            >
+              Files Scanned
+            </p>
 
-          <h3 className="text-3xl font-black text-cyan-500">
-            {report.files_scanned}
-          </h3>
+            <h3 className="text-2xl md:text-3xl font-black text-cyan-500">
+              {report.files_scanned}
+            </h3>
+          </div>
 
           <div
             className={`mt-4 pt-4 border-t ${
@@ -184,7 +186,7 @@ export default function Analytics({ report, dark }) {
               Total Vulnerabilities
             </p>
 
-            <h3 className="text-3xl font-black text-red-500">
+            <h3 className="text-2xl md:text-3xl font-black text-red-500">
               {report.total_vulnerabilities}
             </h3>
           </div>

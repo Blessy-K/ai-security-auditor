@@ -8,6 +8,8 @@ import {
 } from "lucide-react";
 import ScanProgress from "./ScanProgress";
 
+const API = "https://ai-security-auditor-api.onrender.com";
+
 export default function UploadCard({
   onScanComplete,
   onFileSelected,
@@ -16,7 +18,6 @@ export default function UploadCard({
   const [file, setFile] = useState(null);
   const [drag, setDrag] = useState(false);
   const [loading, setLoading] = useState(false);
-
   const [currentStep, setCurrentStep] = useState(0);
   const [status, setStatus] = useState("");
 
@@ -55,19 +56,20 @@ export default function UploadCard({
       const form = new FormData();
       form.append("file", file);
 
-      const res = await fetch("http://127.0.0.1:8001/scan", {
+      const res = await fetch(`${API}/scan`, {
         method: "POST",
         body: form,
       });
+
+      if (!res.ok) throw new Error();
 
       const data = await res.json();
 
       clearInterval(timer);
       setCurrentStep(4);
       setStatus("Analysis Complete");
-
       onScanComplete(data);
-    } catch (err) {
+    } catch {
       clearInterval(timer);
       alert("Backend connection failed.");
     } finally {
@@ -77,16 +79,16 @@ export default function UploadCard({
 
   return (
     <section
-      className={`rounded-[30px] border p-8 shadow-xl transition-all duration-500 ${
+      className={`rounded-2xl md:rounded-[30px] border p-4 sm:p-6 md:p-8 shadow-xl transition-all duration-500 ${
         dark
           ? "border-white/10 bg-gradient-to-br from-slate-900 to-[#08142d]"
           : "border-slate-200 bg-gradient-to-br from-white to-slate-50"
       }`}
     >
       {/* Heading */}
-      <div className="mb-6">
+      <div className="mb-5 md:mb-6">
         <h2
-          className={`text-4xl font-black ${
+          className={`text-2xl sm:text-3xl md:text-4xl font-black ${
             dark ? "text-white" : "text-slate-900"
           }`}
         >
@@ -94,7 +96,7 @@ export default function UploadCard({
         </h2>
 
         <p
-          className={`mt-2 ${
+          className={`mt-2 text-sm sm:text-base ${
             dark ? "text-slate-400" : "text-slate-600"
           }`}
         >
@@ -114,7 +116,7 @@ export default function UploadCard({
           setDrag(false);
           selectFile(e.dataTransfer.files[0]);
         }}
-        className={`group flex h-64 cursor-pointer flex-col items-center justify-center rounded-3xl border-2 border-dashed transition-all duration-300 ${
+        className={`group flex min-h-[220px] sm:min-h-[260px] cursor-pointer flex-col items-center justify-center rounded-2xl md:rounded-3xl border-2 border-dashed px-4 py-6 text-center transition-all duration-300 ${
           drag
             ? "border-cyan-400 bg-cyan-500/10"
             : dark
@@ -130,12 +132,12 @@ export default function UploadCard({
         />
 
         <UploadCloud
-          size={60}
-          className="text-cyan-500 mb-4 group-hover:scale-110 transition-transform"
+          size={48}
+          className="mb-4 text-cyan-500 transition-transform group-hover:scale-110 sm:h-14 sm:w-14 md:h-16 md:w-16"
         />
 
         <h3
-          className={`text-2xl font-bold ${
+          className={`text-lg sm:text-xl md:text-2xl font-bold ${
             dark ? "text-white" : "text-slate-900"
           }`}
         >
@@ -143,7 +145,7 @@ export default function UploadCard({
         </h3>
 
         <p
-          className={`mt-2 ${
+          className={`mt-2 text-sm sm:text-base ${
             dark ? "text-slate-400" : "text-slate-500"
           }`}
         >
@@ -151,10 +153,13 @@ export default function UploadCard({
         </p>
 
         {file && (
-          <div className="mt-5 flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-4 py-2">
-            <FileCode2 size={17} className="text-emerald-500" />
+          <div className="mt-5 flex max-w-full items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-2">
+            <FileCode2
+              size={17}
+              className="text-emerald-500 flex-shrink-0"
+            />
 
-            <span className="text-emerald-600 text-sm font-medium">
+            <span className="truncate max-w-[160px] sm:max-w-[260px] md:max-w-[360px] text-emerald-500 text-xs sm:text-sm font-medium">
               {file.name}
             </span>
 
@@ -178,72 +183,77 @@ export default function UploadCard({
       </label>
 
       {/* Bottom */}
-      <div className="mt-6 flex items-center justify-between">
-        {loading ? (
-          <div className="flex items-center gap-3">
-            <Loader2
-              className="animate-spin text-cyan-500"
-              size={20}
-            />
+      <div className="mt-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div className="min-w-0">
+          {loading ? (
+            <div className="flex items-start gap-3">
+              <Loader2
+                className="animate-spin text-cyan-500 mt-1"
+                size={20}
+              />
 
-            <div>
-              <p className="text-cyan-500 font-medium">{status}</p>
-              <p
-                className={`text-sm ${
-                  dark ? "text-slate-500" : "text-slate-600"
-                }`}
-              >
-                AI security analysis running...
-              </p>
+              <div>
+                <p className="text-cyan-500 font-medium text-sm sm:text-base">
+                  {status}
+                </p>
+
+                <p
+                  className={`text-xs sm:text-sm ${
+                    dark ? "text-slate-500" : "text-slate-600"
+                  }`}
+                >
+                  AI security analysis running...
+                </p>
+              </div>
             </div>
-          </div>
-        ) : file ? (
-          <div className="flex items-center gap-3">
-            <CheckCircle2
-              className="text-emerald-500"
-              size={22}
-            />
+          ) : file ? (
+            <div className="flex items-start gap-3">
+              <CheckCircle2
+                className="text-emerald-500 mt-1"
+                size={22}
+              />
 
-            <div>
-              <p
-                className={`font-medium ${
-                  dark ? "text-white" : "text-slate-900"
-                }`}
-              >
-                {file.name}
-              </p>
+              <div className="min-w-0">
+                <p
+                  className={`font-medium truncate ${
+                    dark ? "text-white" : "text-slate-900"
+                  }`}
+                >
+                  {file.name}
+                </p>
 
-              <p
-                className={`text-sm ${
-                  dark ? "text-slate-400" : "text-slate-500"
-                }`}
-              >
-                Ready to scan
-              </p>
+                <p
+                  className={`text-sm ${
+                    dark ? "text-slate-400" : "text-slate-500"
+                  }`}
+                >
+                  Ready to scan
+                </p>
+              </div>
             </div>
-          </div>
-        ) : (
-          <p
-            className={`${
-              dark ? "text-slate-500" : "text-slate-600"
-            }`}
-          >
-            Select a source file or ZIP archive
-          </p>
-        )}
+          ) : (
+            <p
+              className={`text-sm ${
+                dark ? "text-slate-500" : "text-slate-600"
+              }`}
+            >
+              Select a source file or ZIP archive
+            </p>
+          )}
+        </div>
 
         <button
           disabled={!file || loading}
           onClick={scanFile}
-          className="rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 px-8 py-4 font-bold text-white shadow-lg transition hover:scale-105 disabled:opacity-50"
+          className="w-full md:w-auto rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 px-6 py-3 md:px-8 md:py-4 font-bold text-white shadow-lg transition hover:scale-105 disabled:opacity-50"
         >
           {loading ? "Scanning..." : "Start AI Scan"}
         </button>
       </div>
 
-      {/* Live Pipeline */}
+      {/* Progress */}
       {loading && (
-        <div className="mt-8">
+        <div className="mt-6 md:mt-8">
           <ScanProgress step={currentStep} />
         </div>
       )}
